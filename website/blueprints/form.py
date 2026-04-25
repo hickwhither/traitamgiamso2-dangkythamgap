@@ -70,7 +70,10 @@ def register_form():
             flash('Ngày không hợp lệ. Vui lòng chọn ngày từ lịch hoặc nhập theo định dạng dd/mm/yyyy.', 'danger')
             return render_template('form.html', form_data=form_data), 400
 
-    registration = VisitRegistration(**form_data)
+    registration = VisitRegistration(
+        **form_data,
+        trang_thai=VisitRegistration.STATUS_PROCESSING,
+    )
     db.session.add(registration)
     db.session.commit()
 
@@ -82,3 +85,30 @@ def register_form():
 def registration_detail(registration_id: int):
     registration = VisitRegistration.query.get_or_404(registration_id)
     return render_template('registration_detail.html', registration=registration)
+
+
+@bp.route('/manage/registrations', methods=['GET'])
+def registration_management():
+    registrations = VisitRegistration.query.order_by(VisitRegistration.id.desc()).all()
+    return render_template(
+        'registration_management.html',
+        registrations=registrations,
+        status_choices=VisitRegistration.STATUS_CHOICES,
+    )
+
+
+@bp.route('/manage/registrations/<int:registration_id>/status', methods=['POST'])
+def update_registration_status(registration_id: int):
+    registration = VisitRegistration.query.get_or_404(registration_id)
+    new_status = request.form.get('trang_thai', '').strip()
+    valid_statuses = {status for status, _ in VisitRegistration.STATUS_CHOICES}
+
+    if new_status not in valid_statuses:
+        flash('Trạng thái không hợp lệ.', 'danger')
+        return redirect(url_for('views.registration_management'))
+
+    registration.trang_thai = new_status
+    db.session.commit()
+
+    flash(f'Đã cập nhật trạng thái hồ sơ #{registration.id}.', 'success')
+    return redirect(url_for('views.registration_management'))
