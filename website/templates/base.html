@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+
+
+<head>
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width"/>
+<link rel="icon" href="/static/logo.png">
+
+<title>HjhjHaha! · {%block title%}Meth{%endblock%}</title>
+
+<!-- bootstrap css -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
+
+<style>
+body {
+	padding: 20px; font-family: Arial;
+	/* background-color: #000; */
+	background-image: radial-gradient(circle at right, rgba(121, 68, 154, 0.13),transparent),
+				radial-gradient(circle at left, rgba(41, 196, 255, 0.13), transparent);
+	/* background-image: url("https://cdn.discordapp.com/attachments/910529756351590460/1028979063504781352/unknown.png?ex=661d02ee&is=660a8dee&hm=e81fb51dbe893ccce2c11258bcd9c03cf60de5a3a54e05cfd8458b2330cbca96&");
+	background-size: cover; */
+}
+canvas{
+	position:absolute;
+	left:0;
+	top:0;
+	z-index:-1;
+}
+nav{
+	opacity: 0.9
+}
+.card{
+	opacity: 0.876
+}
+</style>
+
+</head>
+
+
+
+<body style="overflow-x: hidden;">
+
+<!-- Canva background -->
+<canvas style=>Canvas not supported.</canvas>
+
+<!-- Flash -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{%if messages%}
+	<div class="m-5 fixed-bottom" role="alert">
+	{%for cate,mes in messages%}
+	<div class="alert alert-{{cate}} alert-dismissible fade show" role="alert">
+		{{mes| safe}}
+		<button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	{%endfor%}
+	</div>
+{%endif%}
+{%endwith%}
+
+<!-- Body -->
+<div class="p-3 mb-5 mt-5">
+	{%block body%}{%endblock%}
+</div>
+
+<!-- Navigation bar -->
+<nav class="navbar navbar-light navbar-expand-md bg-light fixed-top"><div class="container-fluid">
+	<a class="navbar-brand" href="/"><img src="/static/logo.png" width="auto" height="20" class="d-inline-block align-text-top"></a>
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+	<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbar">
+			<ul class="navbar-nav me-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="/">Trang chủ</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/about">Giới thiệu</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/register">Đăng ký thăm gặp</a>
+				</li>
+			</ul>
+	</div>
+</div></nav>
+
+<!-- Footer -->
+<div class="footer mx-auto col-2">
+</div>
+
+<!-- bootstrap js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+<!-- jquery cdn -->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+<!-- script -->
+{%block script%}{%endblock%}
+
+
+<!-- Bootstrap n' jQuery -->
+<script>
+const toastElList = document.querySelectorAll('.toast')
+const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl, authide=false))
+
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+	return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+
+jQuery(document).ready(function($) {
+	$(".clickable-row").click(function() {
+		window.location = $(this).data("href");
+	});
+});
+</script>
+
+</body>
+
+
+
+</html>
