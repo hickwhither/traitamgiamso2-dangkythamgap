@@ -17,7 +17,7 @@
 
 			<div class="column is-12-mobile is-6-tablet">
 				<label class="label" for="than_nhan_ngay_sinh">Ngày, tháng, năm sinh</label>
-				<input class="input" type="date" id="than_nhan_ngay_sinh" name="than_nhan_ngay_sinh" value="{{ form_data.than_nhan_ngay_sinh if form_data else '' }}" required />
+				<input class="input" type="text" id="than_nhan_ngay_sinh" name="than_nhan_ngay_sinh" value="{{ form_data.than_nhan_ngay_sinh if form_data else '' }}" placeholder="dd/mm/yyyy" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}" required />
 			</div>
 
 			<div class="column is-12">
@@ -47,7 +47,7 @@
 
 			<div class="column is-12-mobile is-6-tablet">
 				<label class="label" for="can_pham_nhan_ngay_sinh">Ngày, tháng, năm sinh</label>
-				<input class="input" type="date" id="can_pham_nhan_ngay_sinh" name="can_pham_nhan_ngay_sinh" value="{{ form_data.can_pham_nhan_ngay_sinh if form_data else '' }}" required />
+				<input class="input" type="text" id="can_pham_nhan_ngay_sinh" name="can_pham_nhan_ngay_sinh" value="{{ form_data.can_pham_nhan_ngay_sinh if form_data else '' }}" placeholder="dd/mm/yyyy" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}" required />
 			</div>
 
 			<div class="column is-12">
@@ -62,7 +62,7 @@
 
 			<div class="column is-12-mobile is-6-tablet">
 				<label class="label" for="can_pham_nhan_ngay_bat">Bắt ngày</label>
-				<input class="input" type="date" id="can_pham_nhan_ngay_bat" name="can_pham_nhan_ngay_bat" value="{{ form_data.can_pham_nhan_ngay_bat if form_data else '' }}" required />
+				<input class="input" type="text" id="can_pham_nhan_ngay_bat" name="can_pham_nhan_ngay_bat" value="{{ form_data.can_pham_nhan_ngay_bat if form_data else '' }}" placeholder="dd/mm/yyyy" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}" required />
 			</div>
 		</div>
 
@@ -73,7 +73,7 @@
 		<div class="columns is-multiline">
 			<div class="column is-12-mobile is-6-tablet">
 				<label class="label" for="thoi_gian_tham_gap_ngay">Ngày</label>
-				<input class="input" type="date" id="thoi_gian_tham_gap_ngay" name="thoi_gian_tham_gap_ngay" value="{{ form_data.thoi_gian_tham_gap_ngay if form_data else '' }}" required />
+				<input class="input" type="text" id="thoi_gian_tham_gap_ngay" name="thoi_gian_tham_gap_ngay" value="{{ form_data.thoi_gian_tham_gap_ngay if form_data else '' }}" placeholder="dd/mm/yyyy" inputmode="numeric" pattern="\d{2}/\d{2}/\d{4}" required />
 			</div>
 
 			<div class="column is-12-mobile is-6-tablet">

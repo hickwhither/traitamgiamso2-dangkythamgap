@@ -1,9 +1,32 @@
+from datetime import datetime
+
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from website import db
 from website.models import VisitRegistration
 
 bp = Blueprint('views', __name__, url_prefix='/')
+
+DATE_FIELDS = (
+    "than_nhan_ngay_sinh",
+    "can_pham_nhan_ngay_sinh",
+    "can_pham_nhan_ngay_bat",
+    "thoi_gian_tham_gap_ngay",
+)
+
+
+def _parse_vn_date(date_str: str):
+    """
+    Parse ngày tháng theo định dạng dd/mm/yyyy từ form.
+    Hỗ trợ thêm yyyy-mm-dd để tương thích dữ liệu cũ.
+    """
+    cleaned = date_str.strip()
+    for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(cleaned, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError("invalid date format")
 
 
 @bp.app_errorhandler(404)
@@ -39,6 +62,13 @@ def register_form():
     if any(not value for value in form_data.values()):
         flash('Vui lòng nhập đầy đủ thông tin bắt buộc.', 'danger')
         return render_template('form.html', form_data=form_data), 400
+
+    for field in DATE_FIELDS:
+        try:
+            form_data[field] = _parse_vn_date(form_data[field])
+        except ValueError:
+            flash('Ngày không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy.', 'danger')
+            return render_template('form.html', form_data=form_data), 400
 
     registration = VisitRegistration(**form_data)
     db.session.add(registration)
