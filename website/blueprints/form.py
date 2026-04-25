@@ -14,3 +14,8 @@ def _404(e):
 def home():
     return render_template('index.html')
 
+
+
+@bp.route('/register', methods=['GET'])
+def register_form():
+    return render_template('form.html')
