@@ -67,7 +67,7 @@ def register_form():
         try:
             form_data[field] = _parse_vn_date(form_data[field])
         except ValueError:
-            flash('Ngày không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy.', 'danger')
+            flash('Ngày không hợp lệ. Vui lòng chọn ngày từ lịch hoặc nhập theo định dạng dd/mm/yyyy.', 'danger')
             return render_template('form.html', form_data=form_data), 400
 
     registration = VisitRegistration(**form_data)
