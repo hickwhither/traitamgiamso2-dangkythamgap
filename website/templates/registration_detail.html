@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Thông tin đăng ký{% endblock %}
+
+{% block body %}
+<section class="card p-5">
+	<h1 class="title is-4">Thông tin đăng ký thăm gặp</h1>
+	<p class="subtitle is-6 has-text-grey">Mã đăng ký: #{{ registration.id }}</p>
+
+	<div class="content">
+		<h2>Thân nhân can phạm nhân</h2>
+		<ul>
+			<li><strong>Họ và tên người đăng ký:</strong> {{ registration.than_nhan_ho_ten }}</li>
+			<li><strong>Ngày sinh:</strong> {{ registration.than_nhan_ngay_sinh.strftime('%d/%m/%Y') }}</li>
+			<li><strong>Nơi đăng ký thường trú:</strong> {{ registration.than_nhan_noi_dang_ky_thuong_tru }}</li>
+			<li><strong>Số CCCD/CMND:</strong> {{ registration.than_nhan_so_cccd_cmnd }}</li>
+			<li><strong>Quan hệ với can phạm nhân:</strong> {{ registration.than_nhan_quan_he_voi_can_pham_nhan }}</li>
+		</ul>
+
+		<h2>Can phạm nhân</h2>
+		<ul>
+			<li><strong>Họ và tên:</strong> {{ registration.can_pham_nhan_ho_ten }}</li>
+			<li><strong>Ngày sinh:</strong> {{ registration.can_pham_nhan_ngay_sinh.strftime('%d/%m/%Y') }}</li>
+			<li><strong>Nơi đăng ký thường trú:</strong> {{ registration.can_pham_nhan_noi_dang_ky_thuong_tru }}</li>
+			<li><strong>Tội danh:</strong> {{ registration.can_pham_nhan_toi_danh }}</li>
+			<li><strong>Bắt ngày:</strong> {{ registration.can_pham_nhan_ngay_bat.strftime('%d/%m/%Y') }}</li>
+		</ul>
+
+		<h2>Thời gian đăng ký thăm gặp</h2>
+		<ul>
+			<li><strong>Ngày:</strong> {{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }}</li>
+			<li><strong>Buổi:</strong> {{ registration.thoi_gian_tham_gap_buoi }}</li>
+		</ul>
+	</div>
+
+	<div class="field is-grouped mt-4">
+		<div class="control">
+			<a href="/register" class="button is-link">Tạo đăng ký mới</a>
+		</div>
+		<div class="control">
+			<a href="/" class="button is-light">Về trang chủ</a>
+		</div>
+	</div>
+</section>
+{% endblock %}

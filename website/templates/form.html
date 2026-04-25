@@ -4,50 +4,93 @@
 
 {% block body %}
 <section class="card p-5">
-	<h1 class="title is-4 mb-2">Phiếu đăng ký thăm gặp</h1>
-	<p class="subtitle is-6 has-text-grey mb-5">Mẫu này được tối ưu để tải nhanh và chạy ổn định trên máy cấu hình yếu.</p>
+	<h1 class="title is-4 mb-2">Trại tạm giam số 2: đăng ký thăm gặp thân nhân</h1>
+	<p class="subtitle is-6 has-text-grey mb-5">Vui lòng điền đúng thông tin theo giấy tờ tùy thân.</p>
 
 	<form method="post" action="/register" autocomplete="on">
+		<h2 class="title is-6 mb-3">THÂN NHÂN CAN PHẠM NHÂN</h2>
 		<div class="columns is-multiline">
 			<div class="column is-12-mobile is-6-tablet">
-				<label class="label" for="visitor_name">Họ và tên người thăm</label>
-				<div class="control">
-					<input class="input" type="text" id="visitor_name" name="visitor_name" required />
-				</div>
+				<label class="label" for="than_nhan_ho_ten">Họ và tên người đăng ký</label>
+				<input class="input" type="text" id="than_nhan_ho_ten" name="than_nhan_ho_ten" value="{{ form_data.than_nhan_ho_ten if form_data else '' }}" required />
 			</div>
 
 			<div class="column is-12-mobile is-6-tablet">
-				<label class="label" for="visitor_phone">Số điện thoại</label>
-				<div class="control">
-					<input class="input" type="tel" id="visitor_phone" name="visitor_phone" required />
-				</div>
-			</div>
-
-			<div class="column is-12-mobile is-6-tablet">
-				<label class="label" for="inmate_name">Người được thăm</label>
-				<div class="control">
-					<input class="input" type="text" id="inmate_name" name="inmate_name" required />
-				</div>
-			</div>
-
-			<div class="column is-12-mobile is-6-tablet">
-				<label class="label" for="visit_date">Ngày thăm</label>
-				<div class="control">
-					<input class="input" type="date" id="visit_date" name="visit_date" required />
-				</div>
+				<label class="label" for="than_nhan_ngay_sinh">Ngày, tháng, năm sinh</label>
+				<input class="input" type="date" id="than_nhan_ngay_sinh" name="than_nhan_ngay_sinh" value="{{ form_data.than_nhan_ngay_sinh if form_data else '' }}" required />
 			</div>
 
 			<div class="column is-12">
-				<label class="label" for="note">Ghi chú</label>
-				<div class="control">
-					<textarea class="textarea" id="note" name="note" rows="3" placeholder="Thông tin bổ sung (nếu có)"></textarea>
+				<label class="label" for="than_nhan_noi_dang_ky_thuong_tru">Nơi đăng ký thường trú</label>
+				<input class="input" type="text" id="than_nhan_noi_dang_ky_thuong_tru" name="than_nhan_noi_dang_ky_thuong_tru" value="{{ form_data.than_nhan_noi_dang_ky_thuong_tru if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="than_nhan_so_cccd_cmnd">Số CCCD / CMND</label>
+				<input class="input" type="text" id="than_nhan_so_cccd_cmnd" name="than_nhan_so_cccd_cmnd" value="{{ form_data.than_nhan_so_cccd_cmnd if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="than_nhan_quan_he_voi_can_pham_nhan">Quan hệ với can phạm nhân</label>
+				<input class="input" type="text" id="than_nhan_quan_he_voi_can_pham_nhan" name="than_nhan_quan_he_voi_can_pham_nhan" value="{{ form_data.than_nhan_quan_he_voi_can_pham_nhan if form_data else '' }}" required />
+			</div>
+		</div>
+
+		<hr />
+
+		<h2 class="title is-6 mb-3">CAN PHẠM NHÂN</h2>
+		<div class="columns is-multiline">
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="can_pham_nhan_ho_ten">Họ và tên</label>
+				<input class="input" type="text" id="can_pham_nhan_ho_ten" name="can_pham_nhan_ho_ten" value="{{ form_data.can_pham_nhan_ho_ten if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="can_pham_nhan_ngay_sinh">Ngày, tháng, năm sinh</label>
+				<input class="input" type="date" id="can_pham_nhan_ngay_sinh" name="can_pham_nhan_ngay_sinh" value="{{ form_data.can_pham_nhan_ngay_sinh if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12">
+				<label class="label" for="can_pham_nhan_noi_dang_ky_thuong_tru">Nơi đăng ký thường trú</label>
+				<input class="input" type="text" id="can_pham_nhan_noi_dang_ky_thuong_tru" name="can_pham_nhan_noi_dang_ky_thuong_tru" value="{{ form_data.can_pham_nhan_noi_dang_ky_thuong_tru if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="can_pham_nhan_toi_danh">Tội danh</label>
+				<input class="input" type="text" id="can_pham_nhan_toi_danh" name="can_pham_nhan_toi_danh" value="{{ form_data.can_pham_nhan_toi_danh if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="can_pham_nhan_ngay_bat">Bắt ngày</label>
+				<input class="input" type="date" id="can_pham_nhan_ngay_bat" name="can_pham_nhan_ngay_bat" value="{{ form_data.can_pham_nhan_ngay_bat if form_data else '' }}" required />
+			</div>
+		</div>
+
+		<hr />
+
+		<h2 class="title is-6 mb-3">THỜI GIAN ĐĂNG KÝ THĂM GẶP</h2>
+		<p class="is-size-7 mb-3">(ghi rõ ngày, giờ thăm gặp dự kiến)</p>
+		<div class="columns is-multiline">
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="thoi_gian_tham_gap_ngay">Ngày</label>
+				<input class="input" type="date" id="thoi_gian_tham_gap_ngay" name="thoi_gian_tham_gap_ngay" value="{{ form_data.thoi_gian_tham_gap_ngay if form_data else '' }}" required />
+			</div>
+
+			<div class="column is-12-mobile is-6-tablet">
+				<label class="label" for="thoi_gian_tham_gap_buoi">Buổi sáng/chiều</label>
+				<div class="select is-fullwidth">
+					<select id="thoi_gian_tham_gap_buoi" name="thoi_gian_tham_gap_buoi" required>
+						<option value="" {% if not form_data or not form_data.thoi_gian_tham_gap_buoi %}selected{% endif %} disabled>-- Chọn buổi --</option>
+						<option value="sáng" {% if form_data and form_data.thoi_gian_tham_gap_buoi == 'sáng' %}selected{% endif %}>Buổi sáng</option>
+						<option value="chiều" {% if form_data and form_data.thoi_gian_tham_gap_buoi == 'chiều' %}selected{% endif %}>Buổi chiều</option>
+					</select>
 				</div>
 			</div>
 		</div>
 
-		<div class="field is-grouped mt-3">
+		<div class="field is-grouped mt-5">
 			<div class="control">
-				<button type="submit" class="button is-link">Gửi đăng ký</button>
+				<button type="submit" class="button is-link">Đăng ký</button>
 			</div>
 			<div class="control">
 				<a href="/" class="button is-light">Quay lại</a>
