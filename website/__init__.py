@@ -67,6 +67,16 @@ def create_app():
 
     create_database(app)
 
+    login_manager = LoginManager()
+    login_manager.login_view = "views.login"
+    login_manager.init_app(app)
+
+    from .models import AdminUser
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.get(AdminUser, int(user_id))
+
     # with app.app_context():
     #     if not User.query.filter_by(username='admin').first():
     #         admin_user = User(username='admin', password=generate_password_hash('dailam132@@'), points=1)
