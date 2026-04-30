@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import check_password_hash
 
 from website import db
-from website.models import VisitRegistration
+from website.models import AdminUser, VisitRegistration
 
 bp = Blueprint('views', __name__, url_prefix='/')
 
@@ -33,6 +35,36 @@ def _parse_vn_date(date_str: str):
 def _404(e):
     return render_template("404.html")
 
+
+
+
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('views.registration_management'))
+
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '').strip()
+
+    user = AdminUser.query.filter_by(username=username).first()
+    if not user or not check_password_hash(user.password_hash, password):
+        flash('Sai tài khoản hoặc mật khẩu.', 'danger')
+        return render_template('login.html'), 401
+
+    login_user(user)
+    flash('Đăng nhập thành công.', 'success')
+    return redirect(url_for('views.registration_management'))
+
+
+@bp.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('Đã đăng xuất.', 'success')
+    return redirect(url_for('views.home'))
 
 @bp.route('/')
 def home():
@@ -88,6 +120,7 @@ def registration_detail(registration_id: int):
 
 
 @bp.route('/manage/registrations', methods=['GET'])
+@login_required
 def registration_management():
     registrations = VisitRegistration.query.order_by(VisitRegistration.id.desc()).all()
     return render_template(
@@ -98,6 +131,7 @@ def registration_management():
 
 
 @bp.route('/manage/registrations/<int:registration_id>/status', methods=['POST'])
+@login_required
 def update_registration_status(registration_id: int):
     registration = VisitRegistration.query.get_or_404(registration_id)
     new_status = request.form.get('trang_thai', '').strip()
