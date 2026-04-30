@@ -76,13 +76,24 @@
 				<div class="navbar-start">
 					<a class="navbar-item" href="/">Trang chủ</a>
 					<a class="navbar-item" href="/register">Đăng ký thăm gặp</a>
-					{% if current_user.is_authenticated %}
-					<form method="post" action="{{ url_for('views.logout') }}" class="navbar-item p-0"><button class="button is-text">Đăng xuất</button></form>
-					{% else %}
-					<a class="navbar-item" href="{{ url_for('views.login') }}">Đăng nhập admin</a>
-					{% endif %}
-					{% if current_user.is_authenticated %}<a class="navbar-item" href="/manage/registrations">Quản lý form</a>{% endif %}
 				</div>
+
+				{% if current_user.is_authenticated %}
+				<div class="navbar-end">
+					<div class="navbar-item has-dropdown is-hoverable">
+						<a class="navbar-link">{{ current_user.username }}</a>
+						<div class="navbar-dropdown is-right">
+							<a class="navbar-item" href="/manage/registrations">Quản lý form</a>
+							<hr class="navbar-divider">
+							<div class="navbar-item">
+								<form method="post" action="{{ url_for('views.logout') }}" class="is-fullwidth">
+									<button class="button is-text p-0" type="submit">Đăng xuất</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
 			</div>
 		</div>
 	</nav>
@@ -104,6 +115,14 @@
 			{% block body %}{% endblock %}
 		</div>
 	</main>
+
+	<footer class="footer py-4">
+		<div class="content has-text-centered">
+			{% if not current_user.is_authenticated %}
+			<a class="button is-light" href="{{ url_for('views.login') }}">Đăng nhập admin</a>
+			{% endif %}
+		</div>
+	</footer>
 
 	<script>
 		(function () {
