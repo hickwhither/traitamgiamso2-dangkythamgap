@@ -28,8 +28,37 @@
 		}
 
 		.app-main {
-			padding-top: 4.25rem;
+			padding-top: 11rem;
 			padding-bottom: 1.5rem;
+		}
+
+		.top-banner {
+			background: linear-gradient(120deg, #1f5ca8, #2494d2 52%, #2053a0);
+			color: #fff;
+			padding: 1rem 0;
+			border-bottom: 3px solid #1671bf;
+		}
+
+		.navbar.is-fixed-top {
+			top: 122px;
+		}
+
+		.top-banner-inner {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
+
+		.top-banner-logo {
+			height: 90px;
+			width: auto;
+		}
+
+		.top-banner-text {
+			font-weight: 700;
+			letter-spacing: 0.03em;
+			text-transform: uppercase;
+			font-size: 1.1rem;
 		}
 
 		/* .surface-box {
@@ -55,9 +84,58 @@
 				scroll-behavior: auto !important;
 			}
 		}
+
+		.footer-banner {
+			background: radial-gradient(circle at 15% 50%, rgba(27, 140, 228, 0.2), transparent 32%),
+				linear-gradient(135deg, #0f4f95, #0d3f79);
+			color: #fff;
+			padding: 1.3rem 0;
+			border-top: 4px solid #2f7ac4;
+		}
+
+		.footer-banner-title {
+			font-size: 1.1rem;
+			font-weight: 700;
+			color: #ffe83b;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+
+		.footer-banner-text {
+			margin-top: 0.35rem;
+			font-size: 0.95rem;
+		}
+
+		.footer-login-button {
+			font-size: 0.75rem;
+			padding-inline: 0.75rem;
+			height: 2rem;
+		}
+
+		@media (max-width: 768px) {
+			.app-main {
+				padding-top: 13rem;
+			}
+
+			.top-banner-inner {
+				flex-direction: column;
+				text-align: center;
+			}
+
+			.navbar.is-fixed-top {
+				top: 162px;
+			}
+		}
 	</style>
 </head>
 <body>
+	<header class="top-banner">
+		<div class="container top-banner-inner">
+			<img src="/static/logo.png" alt="Logo trường" class="top-banner-logo" loading="lazy" decoding="async" />
+			<div class="top-banner-text">Trang thông tin điện tử Trại giam số 2</div>
+		</div>
+	</header>
+
 	<nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
 		<div class="container">
 			<div class="navbar-brand">
@@ -116,10 +194,17 @@
 		</div>
 	</main>
 
-	<footer class="footer py-4">
+	<footer class="footer-banner">
+		<div class="container has-text-centered">
+			<div class="footer-banner-title">Trang thông tin điện tử Trại giam số 2</div>
+			<p class="footer-banner-text mb-3">Cơ quan chủ quản: Trại giam số 2 · Địa chỉ liên hệ và thông tin hỗ trợ được cập nhật tại trang quản trị.</p>
+		</div>
+	</footer>
+
+	<footer class="footer py-3">
 		<div class="content has-text-centered">
 			{% if not current_user.is_authenticated %}
-			<a class="button is-light" href="{{ url_for('views.login') }}">Đăng nhập admin</a>
+			<a class="button is-light footer-login-button" href="{{ url_for('views.login') }}">Đăng nhập admin</a>
 			{% endif %}
 		</div>
 	</footer>
