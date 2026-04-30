@@ -1,0 +1,91 @@
+:root {
+	--app-bg: #f7f8fa;
+	--app-surface: #ffffff;
+	--app-border: #e7eaf0;
+}
+
+html,
+body {
+    height: 100%; /* Quan trọng để flexbox tính toán được chiều cao màn hình */
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--app-bg);
+    color: #1f2937;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    text-rendering: optimizeSpeed;
+}
+
+.app-main {
+    flex: 1 0 auto; /* Đẩy footer xuống đáy */
+    padding-top: 3rem;
+    padding-bottom: 3rem; /* Điều chỉnh lại padding cho hợp lý */
+    /* Loại bỏ min-height cũ nếu không cần thiết */
+}
+
+.top-banner {
+    background-image: url("/static/banner.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+	/* background: linear-gradient(120deg, #1f5ca8, #2494d2 52%, #2053a0); */
+	color: #fff;
+	padding: 4rem 0;
+	border-bottom: 3px solid #1671bf;
+}
+.top-banner-inner {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+.top-banner-logo {
+	height: 90px;
+	width: auto;
+}
+.top-banner-text {
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	font-size: 1.1rem;
+}
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+.footer-banner {
+    flex-shrink: 0; /* Không cho phép footer bị co lại */
+    background: radial-gradient(circle at 15% 50%, rgba(27, 140, 228, 0.2), transparent 32%),
+                linear-gradient(135deg, #0f4f95, #0d3f79);
+    color: #fff;
+    padding: 1.3rem 0;
+    border-top: 4px solid #2f7ac4;
+    margin-top: 0; /* Đảm bảo không có khoảng cách phía trên nếu không cần */
+}
+.footer-banner-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: #ffe83b;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+.footer-banner-text {
+	margin-top: 0.35rem;
+	font-size: 0.95rem;
+}
+.footer-login-button {
+	font-size: 0.67rem;
+	padding-inline: 0.75rem;
+	height: 2rem;
+}
+@media (max-width: 768px) {
+	.top-banner-inner {
+		flex-direction: column;
+		text-align: center;
+	}
+}
