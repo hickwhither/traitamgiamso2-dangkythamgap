@@ -5,47 +5,49 @@
 {% block body %}
 <section class="card p-5">
 	<h1 class="title is-4 mb-2">Trang quản lý form thăm gặp</h1>
-	<p class="subtitle is-6 has-text-grey mb-4">Theo dõi và cập nhật trạng thái xử lý hồ sơ.</p>
+	<p class="subtitle is-6 has-text-grey mb-4">50 hồ sơ/trang, sắp xếp theo thời gian thăm gặp gần nhất.</p>
 
-	{% if registrations %}
+	<form method="get" class="is-flex is-flex-wrap-wrap is-align-items-flex-end mb-4" style="gap: .75rem;">
+		<div>
+			<label class="label mb-1">Lọc theo trạng thái</label>
+			<div class="select">
+				<select name="status" onchange="this.form.submit()">
+					<option value="">Tất cả trạng thái</option>
+					{% for status_value, status_label in status_choices %}
+					<option value="{{ status_value }}" {% if selected_status == status_value %}selected{% endif %}>{{ status_label }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div>
+			<a class="button is-light" href="{{ url_for('views.registration_calendar', status=selected_status) }}">Xem lịch theo ngày</a>
+		</div>
+	</form>
+
+	{% if registrations.items %}
 	<div class="table-container">
 		<table class="table is-fullwidth is-striped is-hoverable is-size-7-mobile">
 			<thead>
 				<tr>
-					<th>Mã</th>
-					<th>Thân nhân</th>
-					<th>Can phạm nhân</th>
-					<th>Ngày thăm</th>
-					<th>Trạng thái</th>
-					<th>Cập nhật</th>
+					<th>Mã</th><th>Thân nhân</th><th>Can phạm nhân</th><th>Ngày thăm</th><th>Trạng thái / Cập nhật</th>
 				</tr>
 			</thead>
 			<tbody>
-				{% for registration in registrations %}
+				{% for registration in registrations.items %}
 				<tr onclick="window.location='{{ url_for("views.registration_detail", registration_id=registration.id) }}'" style="cursor:pointer;">
 					<td>#{{ registration.id }}</td>
-					<td>
-						<div><strong>{{ registration.than_nhan_ho_ten }}</strong></div>
-						<div class="has-text-grey">{{ registration.than_nhan_so_cccd_cmnd }}</div>
-					</td>
+					<td><strong>{{ registration.than_nhan_ho_ten }}</strong><div class="has-text-grey">{{ registration.than_nhan_so_cccd_cmnd }}</div></td>
 					<td>{{ registration.can_pham_nhan_ho_ten }}</td>
-					<td>
-						{{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }}
-						- {{ registration.thoi_gian_tham_gap_buoi }}
-					</td>
-					<td>
-						<span class="tag {{ registration.trang_thai_tag_class }}">{{ registration.trang_thai_hien_thi }}</span>
-					</td>
+					<td>{{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }} - {{ registration.thoi_gian_tham_gap_buoi }}</td>
 					<td onclick="event.stopPropagation();">
-						<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}" class="is-flex is-align-items-center" style="gap: .5rem;">
+						<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}">
 							<div class="select is-small is-fullwidth">
-								<select name="trang_thai" aria-label="Cập nhật trạng thái hồ sơ {{ registration.id }}">
+								<select name="trang_thai" onchange="this.form.submit()" aria-label="Cập nhật trạng thái hồ sơ {{ registration.id }}">
 									{% for status_value, status_label in status_choices %}
 									<option value="{{ status_value }}" {% if registration.trang_thai == status_value %}selected{% endif %}>{{ status_label }}</option>
 									{% endfor %}
 								</select>
 							</div>
-							<button type="submit" class="button is-small is-link is-light">Lưu</button>
 						</form>
 					</td>
 				</tr>
@@ -53,10 +55,20 @@
 			</tbody>
 		</table>
 	</div>
+
+	<nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
+		{% if registrations.has_prev %}
+		<a class="pagination-previous" href="{{ url_for('views.registration_management', page=registrations.prev_num, status=selected_status) }}">Trang trước</a>
+		{% endif %}
+		{% if registrations.has_next %}
+		<a class="pagination-next" href="{{ url_for('views.registration_management', page=registrations.next_num, status=selected_status) }}">Trang sau</a>
+		{% endif %}
+		<ul class="pagination-list">
+			<li><span class="pagination-link is-current">Trang {{ registrations.page }}/{{ registrations.pages if registrations.pages else 1 }}</span></li>
+		</ul>
+	</nav>
 	{% else %}
-	<article class="message is-warning">
-		<div class="message-body">Chưa có hồ sơ nào để quản lý.</div>
-	</article>
+	<article class="message is-warning"><div class="message-body">Không có hồ sơ phù hợp bộ lọc.</div></article>
 	{% endif %}
 </section>
 {% endblock %}

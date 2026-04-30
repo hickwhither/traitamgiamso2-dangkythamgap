@@ -18,10 +18,6 @@ DATE_FIELDS = (
 
 
 def _parse_vn_date(date_str: str):
-    """
-    Parse ngày tháng theo định dạng dd/mm/yyyy từ form.
-    Hỗ trợ thêm yyyy-mm-dd để tương thích dữ liệu cũ.
-    """
     cleaned = date_str.strip()
     for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
         try:
@@ -34,8 +30,6 @@ def _parse_vn_date(date_str: str):
 @bp.app_errorhandler(404)
 def _404(e):
     return render_template("404.html")
-
-
 
 
 @bp.route('/login', methods=['GET', 'POST'])
@@ -66,6 +60,7 @@ def logout():
     flash('Đã đăng xuất.', 'success')
     return redirect(url_for('views.home'))
 
+
 @bp.route('/')
 def home():
     return render_template('index.html')
@@ -85,6 +80,7 @@ def register_form():
         "can_pham_nhan_ho_ten": request.form.get("can_pham_nhan_ho_ten", "").strip(),
         "can_pham_nhan_ngay_sinh": request.form.get("can_pham_nhan_ngay_sinh", "").strip(),
         "can_pham_nhan_noi_dang_ky_thuong_tru": request.form.get("can_pham_nhan_noi_dang_ky_thuong_tru", "").strip(),
+        "can_pham_nhan_so_cccd_cmnd": request.form.get("can_pham_nhan_so_cccd_cmnd", "").strip(),
         "can_pham_nhan_toi_danh": request.form.get("can_pham_nhan_toi_danh", "").strip(),
         "can_pham_nhan_ngay_bat": request.form.get("can_pham_nhan_ngay_bat", "").strip(),
         "thoi_gian_tham_gap_ngay": request.form.get("thoi_gian_tham_gap_ngay", "").strip(),
@@ -102,10 +98,7 @@ def register_form():
             flash('Ngày không hợp lệ. Vui lòng chọn ngày từ lịch hoặc nhập theo định dạng dd/mm/yyyy.', 'danger')
             return render_template('form.html', form_data=form_data), 400
 
-    registration = VisitRegistration(
-        **form_data,
-        trang_thai=VisitRegistration.STATUS_PROCESSING,
-    )
+    registration = VisitRegistration(**form_data, trang_thai=VisitRegistration.STATUS_PROCESSING)
     db.session.add(registration)
     db.session.commit()
 
@@ -116,16 +109,65 @@ def register_form():
 @bp.route('/register/<int:registration_id>', methods=['GET'])
 def registration_detail(registration_id: int):
     registration = VisitRegistration.query.get_or_404(registration_id)
-    return render_template('registration_detail.html', registration=registration)
+    return render_template(
+        'registration_detail.html',
+        registration=registration,
+        status_choices=VisitRegistration.STATUS_CHOICES,
+    )
 
 
 @bp.route('/manage/registrations', methods=['GET'])
 @login_required
 def registration_management():
-    registrations = VisitRegistration.query.order_by(VisitRegistration.id.desc()).all()
+    selected_status = request.args.get('status', '').strip()
+    page = request.args.get('page', 1, type=int)
+
+    query = VisitRegistration.query
+    if selected_status:
+        query = query.filter(VisitRegistration.trang_thai == selected_status)
+
+    registrations = query.order_by(
+        VisitRegistration.thoi_gian_tham_gap_ngay.desc(),
+        VisitRegistration.id.desc(),
+    ).paginate(page=page, per_page=50, error_out=False)
+
     return render_template(
         'registration_management.html',
         registrations=registrations,
+        status_choices=VisitRegistration.STATUS_CHOICES,
+        selected_status=selected_status,
+    )
+
+
+@bp.route('/manage/calendar', methods=['GET'])
+@login_required
+def registration_calendar():
+    selected_status = request.args.get('status', '').strip()
+    query = VisitRegistration.query
+    if selected_status:
+        query = query.filter(VisitRegistration.trang_thai == selected_status)
+
+    all_regs = query.order_by(
+        VisitRegistration.thoi_gian_tham_gap_ngay.desc(),
+        VisitRegistration.id.asc(),
+    ).all()
+
+    grouped_days = {}
+    for reg in all_regs:
+        day_key = reg.thoi_gian_tham_gap_ngay
+        if day_key not in grouped_days:
+            grouped_days[day_key] = {'Sáng': [], 'Chiều': [], 'Khác': []}
+        bucket = reg.thoi_gian_tham_gap_buoi.strip().title()
+        if bucket not in ('Sáng', 'Chiều'):
+            bucket = 'Khác'
+        grouped_days[day_key][bucket].append(reg)
+
+    ordered_days = sorted(grouped_days.items(), key=lambda item: item[0], reverse=True)
+
+    return render_template(
+        'registration_calendar.html',
+        grouped_days=ordered_days,
+        selected_status=selected_status,
         status_choices=VisitRegistration.STATUS_CHOICES,
     )
 
@@ -139,10 +181,10 @@ def update_registration_status(registration_id: int):
 
     if new_status not in valid_statuses:
         flash('Trạng thái không hợp lệ.', 'danger')
-        return redirect(url_for('views.registration_management'))
+        return redirect(request.referrer or url_for('views.registration_management'))
 
     registration.trang_thai = new_status
     db.session.commit()
 
     flash(f'Đã cập nhật trạng thái hồ sơ #{registration.id}.', 'success')
-    return redirect(url_for('views.registration_management'))
+    return redirect(request.referrer or url_for('views.registration_management'))
