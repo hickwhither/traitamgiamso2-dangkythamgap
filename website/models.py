@@ -62,3 +62,15 @@ class VisitRegistration(db.Model):
     @property
     def trang_thai_tag_class(self) -> str:
         return self.STATUS_TAG_CLASSES.get(self.trang_thai, "is-light")
+
+
+from flask_login import UserMixin
+
+
+class AdminUser(UserMixin, db.Model):
+    __tablename__ = "admin_users"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(nullable=False)
+

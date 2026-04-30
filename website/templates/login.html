@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Đăng nhập admin{% endblock %}
+
+{% block body %}
+<section class="card p-5">
+  <h1 class="title is-4">Đăng nhập quản trị</h1>
+  <form method="post" class="mt-4">
+    <div class="field">
+      <label class="label">Tên đăng nhập</label>
+      <div class="control"><input class="input" type="text" name="username" required></div>
+    </div>
+    <div class="field">
+      <label class="label">Mật khẩu</label>
+      <div class="control"><input class="input" type="password" name="password" required></div>
+    </div>
+    <button class="button is-link" type="submit">Đăng nhập</button>
+  </form>
+</section>
+{% endblock %}

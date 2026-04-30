@@ -22,7 +22,7 @@
 			</thead>
 			<tbody>
 				{% for registration in registrations %}
-				<tr>
+				<tr onclick="window.location='{{ url_for("views.registration_detail", registration_id=registration.id) }}'" style="cursor:pointer;">
 					<td>#{{ registration.id }}</td>
 					<td>
 						<div><strong>{{ registration.than_nhan_ho_ten }}</strong></div>
@@ -36,7 +36,7 @@
 					<td>
 						<span class="tag {{ registration.trang_thai_tag_class }}">{{ registration.trang_thai_hien_thi }}</span>
 					</td>
-					<td>
+					<td onclick="event.stopPropagation();">
 						<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}" class="is-flex is-align-items-center" style="gap: .5rem;">
 							<div class="select is-small is-fullwidth">
 								<select name="trang_thai" aria-label="Cập nhật trạng thái hồ sơ {{ registration.id }}">

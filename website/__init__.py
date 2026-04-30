@@ -1,9 +1,6 @@
-from flask import Flask, render_template
-# from flask_login import current_user
+from flask import Flask
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-# from flask_login import LoginManager
-
-from werkzeug.security import generate_password_hash
 
 from sqlalchemy import text
 
@@ -27,10 +24,25 @@ def _ensure_registration_status_column(app):
             db.session.commit()
 
 
+def _ensure_admin_users_table(app):
+    with app.app_context():
+        db.session.execute(
+            text(
+                "CREATE TABLE IF NOT EXISTS admin_users ("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                "username VARCHAR NOT NULL UNIQUE, "
+                "password_hash VARCHAR NOT NULL"
+                ")"
+            )
+        )
+        db.session.commit()
+
+
 def create_database(app):
     with app.app_context():
         db.create_all()
     _ensure_registration_status_column(app)
+    _ensure_admin_users_table(app)
     print("Database created")
 
 
@@ -55,6 +67,16 @@ def create_app():
 
     create_database(app)
 
+    login_manager = LoginManager()
+    login_manager.login_view = "views.login"
+    login_manager.init_app(app)
+
+    from .models import AdminUser
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.get(AdminUser, int(user_id))
+
     # with app.app_context():
     #     if not User.query.filter_by(username='admin').first():
     #         admin_user = User(username='admin', password=generate_password_hash('dailam132@@'), points=1)
@@ -68,5 +90,27 @@ def create_app():
     # @login_manager.user_loader
     # def load_user(id):
     #     return User.query.get(id)
+
+    @app.cli.command("create-admin")
+    def create_admin_command():
+        """Tạo tài khoản admin từ command line."""
+        import click
+        from werkzeug.security import generate_password_hash
+        from .models import AdminUser
+
+        username = click.prompt("Admin username", type=str).strip()
+        password = click.prompt("Admin password", hide_input=True, confirmation_prompt=True).strip()
+
+        if not username or not password:
+            raise click.ClickException("Username/password không được để trống")
+
+        existing = AdminUser.query.filter_by(username=username).first()
+        if existing:
+            raise click.ClickException("Username đã tồn tại")
+
+        admin = AdminUser(username=username, password_hash=generate_password_hash(password))
+        db.session.add(admin)
+        db.session.commit()
+        click.echo(f"Đã tạo admin: {username}")
 
     return app
