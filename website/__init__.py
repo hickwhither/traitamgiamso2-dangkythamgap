@@ -77,20 +77,6 @@ def create_app():
     def load_user(user_id):
         return db.session.get(AdminUser, int(user_id))
 
-    # with app.app_context():
-    #     if not User.query.filter_by(username='admin').first():
-    #         admin_user = User(username='admin', password=generate_password_hash('dailam132@@'), points=1)
-    #         db.session.add(admin_user)
-    #         db.session.commit()
-
-    # login_manager = LoginManager()
-    # login_manager.login_view = 'auth.login'
-    # login_manager.init_app(app)
-
-    # @login_manager.user_loader
-    # def load_user(id):
-    #     return User.query.get(id)
-
     @app.cli.command("create-admin")
     def create_admin_command():
         """Tạo tài khoản admin từ command line."""
