@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Lịch thăm gặp{% endblock %}
+{% block body %}
+<section class="card p-5">
+    <h1 class="title is-4 mb-2">Lịch thăm gặp theo ngày</h1>
+    <p class="subtitle is-6 has-text-grey">Mỗi ngày gồm 2 buổi (Sáng/Chiều), bấm vào ô để xem danh sách.</p>
+
+    <form method="get" class="mb-4">
+        <label class="label">Lọc theo trạng thái</label>
+        <div class="select">
+            <select name="status" onchange="this.form.submit()">
+                <option value="">Tất cả trạng thái</option>
+                {% for status_value, status_label in status_choices %}
+                <option value="{{ status_value }}" {% if selected_status == status_value %}selected{% endif %}>{{ status_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <a class="button is-light ml-2" href="{{ url_for('views.registration_management', status=selected_status) }}">Về bảng hồ sơ</a>
+    </form>
+
+    {% if grouped_days %}
+    {% for day, sessions in grouped_days %}
+    <div class="box">
+        <h2 class="title is-6">Ngày {{ day.strftime('%d/%m/%Y') }}</h2>
+        <div class="columns is-multiline">
+            {% for session_name in ['Sáng', 'Chiều'] %}
+            <div class="column is-half">
+                <details>
+                    <summary><strong>{{ session_name }}</strong>: {{ sessions[session_name] | length }} buổi gặp</summary>
+                    {% if sessions[session_name] %}
+                    <ul class="mt-2">
+                        {% for reg in sessions[session_name] %}
+                        <li>{{ loop.index }}. <a href="{{ url_for('views.registration_detail', registration_id=reg.id) }}">#{{ reg.id }} - {{ reg.than_nhan_ho_ten }} / {{ reg.can_pham_nhan_ho_ten }}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="has-text-grey mt-2">Không có hồ sơ.</p>
+                    {% endif %}
+                </details>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <article class="message is-warning"><div class="message-body">Không có lịch thăm gặp phù hợp.</div></article>
+    {% endif %}
+</section>
+{% endblock %}

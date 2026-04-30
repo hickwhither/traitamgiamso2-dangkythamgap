@@ -11,6 +11,21 @@
 		<span class="tag is-medium {{ registration.trang_thai_tag_class }}">{{ registration.trang_thai_hien_thi }}</span>
 	</div>
 
+	{% if current_user.is_authenticated %}
+	<div class="mb-5">
+		<label class="label">Trạng thái (chỉnh sửa trực tiếp)</label>
+		<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}" class="is-inline-block">
+			<div class="select">
+				<select name="trang_thai" onchange="this.form.submit()">
+					{% for status_value, status_label in status_choices %}
+					<option value="{{ status_value }}" {% if registration.trang_thai == status_value %}selected{% endif %}>{{ status_label }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</form>
+	</div>
+	{% endif %}
+
 	<div class="content">
 		<h2>Thân nhân can phạm nhân</h2>
 		<ul>
@@ -26,6 +41,7 @@
 			<li><strong>Họ và tên:</strong> {{ registration.can_pham_nhan_ho_ten }}</li>
 			<li><strong>Ngày sinh:</strong> {{ registration.can_pham_nhan_ngay_sinh.strftime('%d/%m/%Y') }}</li>
 			<li><strong>Nơi đăng ký thường trú:</strong> {{ registration.can_pham_nhan_noi_dang_ky_thuong_tru }}</li>
+			<li><strong>Số CCCD/CMND:</strong> {{ registration.can_pham_nhan_so_cccd_cmnd }}</li>
 			<li><strong>Tội danh:</strong> {{ registration.can_pham_nhan_toi_danh }}</li>
 			<li><strong>Bắt ngày:</strong> {{ registration.can_pham_nhan_ngay_bat.strftime('%d/%m/%Y') }}</li>
 		</ul>
@@ -35,15 +51,6 @@
 			<li><strong>Ngày:</strong> {{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }}</li>
 			<li><strong>Buổi:</strong> {{ registration.thoi_gian_tham_gap_buoi }}</li>
 		</ul>
-	</div>
-
-	<div class="field is-grouped mt-4">
-		<div class="control">
-			<a href="/register" class="button is-link">Tạo đăng ký mới</a>
-		</div>
-		<div class="control">
-			<a href="/" class="button is-light">Về trang chủ</a>
-		</div>
 	</div>
 </section>
 {% endblock %}

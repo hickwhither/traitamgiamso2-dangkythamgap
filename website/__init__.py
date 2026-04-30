@@ -24,6 +24,22 @@ def _ensure_registration_status_column(app):
             db.session.commit()
 
 
+
+
+def _ensure_prisoner_identity_column(app):
+    with app.app_context():
+        columns = db.session.execute(text("PRAGMA table_info(visit_registrations)"))
+        column_names = {column[1] for column in columns.fetchall()}
+        if "can_pham_nhan_so_cccd_cmnd" not in column_names:
+            db.session.execute(
+                text(
+                    "ALTER TABLE visit_registrations "
+                    "ADD COLUMN can_pham_nhan_so_cccd_cmnd VARCHAR NOT NULL DEFAULT ''"
+                )
+            )
+            db.session.commit()
+
+
 def _ensure_admin_users_table(app):
     with app.app_context():
         db.session.execute(
@@ -42,6 +58,7 @@ def create_database(app):
     with app.app_context():
         db.create_all()
     _ensure_registration_status_column(app)
+    _ensure_prisoner_identity_column(app)
     _ensure_admin_users_table(app)
     print("Database created")
 
