@@ -11,3 +11,4 @@ wheels/
 
 .env
 instance
+docker-compose.yml

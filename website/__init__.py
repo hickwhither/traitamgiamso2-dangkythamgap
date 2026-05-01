@@ -2,64 +2,14 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-from sqlalchemy import text
-
 import os, importlib
-
+from sqlalchemy import text
 db = SQLAlchemy()
-DB_NAME = 'database.db'
-
-
-def _ensure_registration_status_column(app):
-    with app.app_context():
-        columns = db.session.execute(text("PRAGMA table_info(visit_registrations)"))
-        column_names = {column[1] for column in columns.fetchall()}
-        if "trang_thai" not in column_names:
-            db.session.execute(
-                text(
-                    "ALTER TABLE visit_registrations "
-                    "ADD COLUMN trang_thai VARCHAR NOT NULL DEFAULT 'dang_xu_ly'"
-                )
-            )
-            db.session.commit()
-
-
-
-
-def _ensure_prisoner_identity_column(app):
-    with app.app_context():
-        columns = db.session.execute(text("PRAGMA table_info(visit_registrations)"))
-        column_names = {column[1] for column in columns.fetchall()}
-        if "can_pham_nhan_so_cccd_cmnd" not in column_names:
-            db.session.execute(
-                text(
-                    "ALTER TABLE visit_registrations "
-                    "ADD COLUMN can_pham_nhan_so_cccd_cmnd VARCHAR NOT NULL DEFAULT ''"
-                )
-            )
-            db.session.commit()
-
-
-def _ensure_admin_users_table(app):
-    with app.app_context():
-        db.session.execute(
-            text(
-                "CREATE TABLE IF NOT EXISTS admin_users ("
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "username VARCHAR NOT NULL UNIQUE, "
-                "password_hash VARCHAR NOT NULL"
-                ")"
-            )
-        )
-        db.session.commit()
 
 
 def create_database(app):
     with app.app_context():
         db.create_all()
-    _ensure_registration_status_column(app)
-    _ensure_prisoner_identity_column(app)
-    _ensure_admin_users_table(app)
     print("Database created")
 
 
@@ -67,7 +17,7 @@ def create_app():
 
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
     db.init_app(app)
 

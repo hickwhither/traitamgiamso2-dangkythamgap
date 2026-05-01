@@ -1,0 +1,43 @@
+x-common-env: &common-env
+  POSTGRES_USER: myuser
+  POSTGRES_PASSWORD: mypassword
+  POSTGRES_DB: visit_db
+  SECRET_KEY: secret_key
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: flask_db
+    restart: always
+    environment:
+      <<: *common-env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: flask_app
+    restart: always
+    command: >
+      gunicorn --bind 0.0.0.0:5000 
+      --access-logfile - --error-logfile - --log-level info 
+      --access-logformat '%(h)s %(t)s "%(r)s" %(s)s %(b)s' 
+      wsgi:app
+    environment:
+      <<: *common-env
+      DATABASE_URL: postgresql://myuser:mypassword@db:5432/visit_db
+    depends_on:
+      - db
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10mb"
+        max-file: "3"
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    command: tunnel --no-autoupdate run --token YOUR_TOKEN_HERE
+
+volumes:
+  postgres_data:

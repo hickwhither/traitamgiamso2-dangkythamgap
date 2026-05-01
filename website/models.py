@@ -42,7 +42,6 @@ class VisitRegistration(db.Model):
     can_pham_nhan_ho_ten: Mapped[str] = mapped_column(nullable=False)
     can_pham_nhan_ngay_sinh: Mapped[date] = mapped_column(Date, nullable=False)
     can_pham_nhan_noi_dang_ky_thuong_tru: Mapped[str] = mapped_column(nullable=False)
-    can_pham_nhan_so_cccd_cmnd: Mapped[str] = mapped_column(nullable=False)
     can_pham_nhan_toi_danh: Mapped[str] = mapped_column(nullable=False)
     can_pham_nhan_ngay_bat: Mapped[date] = mapped_column(Date, nullable=False)
 

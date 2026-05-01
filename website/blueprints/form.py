@@ -80,7 +80,6 @@ def register_form():
         "can_pham_nhan_ho_ten": request.form.get("can_pham_nhan_ho_ten", "").strip(),
         "can_pham_nhan_ngay_sinh": request.form.get("can_pham_nhan_ngay_sinh", "").strip(),
         "can_pham_nhan_noi_dang_ky_thuong_tru": request.form.get("can_pham_nhan_noi_dang_ky_thuong_tru", "").strip(),
-        "can_pham_nhan_so_cccd_cmnd": request.form.get("can_pham_nhan_so_cccd_cmnd", "").strip(),
         "can_pham_nhan_toi_danh": request.form.get("can_pham_nhan_toi_danh", "").strip(),
         "can_pham_nhan_ngay_bat": request.form.get("can_pham_nhan_ngay_bat", "").strip(),
         "thoi_gian_tham_gap_ngay": request.form.get("thoi_gian_tham_gap_ngay", "").strip(),
