@@ -66,4 +66,41 @@ def create_app():
         db.session.commit()
         click.echo(f"Đã tạo admin: {username}")
 
+    @app.cli.command("list-admins")
+    def list_admins_command():
+        """Hiển thị danh sách tài khoản admin."""
+        import click
+        from .models import AdminUser
+
+        admins = AdminUser.query.order_by(AdminUser.id.asc()).all()
+        if not admins:
+            click.echo("Chưa có tài khoản admin nào.")
+            return
+
+        click.echo("Danh sách admin:")
+        for admin in admins:
+            click.echo(f"- id={admin.id}, username={admin.username}")
+
+    @app.cli.command("delete-admin")
+    def delete_admin_command():
+        """Xóa tài khoản admin theo username hoặc id."""
+        import click
+        from .models import AdminUser
+
+        identifier = click.prompt("Nhập username hoặc id admin cần xóa", type=str).strip()
+        if not identifier:
+            raise click.ClickException("Bạn phải nhập username hoặc id")
+
+        admin = None
+        if identifier.isdigit():
+            admin = db.session.get(AdminUser, int(identifier))
+        if admin is None:
+            admin = AdminUser.query.filter_by(username=identifier).first()
+        if admin is None:
+            raise click.ClickException("Không tìm thấy admin cần xóa")
+
+        db.session.delete(admin)
+        db.session.commit()
+        click.echo(f"Đã xóa admin: {admin.username} (id={admin.id})")
+
     return app

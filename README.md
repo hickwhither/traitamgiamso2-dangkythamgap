@@ -12,3 +12,7 @@ II. Restore
 cat backup_v1.sql | docker exec -i flask_db psql -U myuser -d visit_db
 ```
 
+III. Flask Cli
+```bash
+docker exec -it flask_app flask create-admin
+```
