@@ -43,13 +43,15 @@
 					<div class="navbar-item has-dropdown is-hoverable">
 						<a class="navbar-link">{{ current_user.username }}</a>
 						<div class="navbar-dropdown is-right">
-							<a class="navbar-item" href="/manage/registrations">Quản lý form</a>
+							<a class="navbar-item" href="/manage/registrations">Bảng hồ sơ</a>
+							<a class="navbar-item" href="/manage/calendar">Lịch thăm gặp</a>
 							<hr class="navbar-divider">
-							<div class="navbar-item">
-								<form method="post" action="{{ url_for('views.logout') }}" class="is-fullwidth">
-									<button class="button is-text p-0" type="submit">Đăng xuất</button>
-								</form>
-							</div>
+							
+							<form method="post" action="{{ url_for('views.logout') }}">
+								<button type="submit" class="navbar-item button is-ghost is-fullwidth" style="justify-content: flex-start; border: none; font-weight: normal;">
+									Đăng xuất
+								</button>
+							</form>
 						</div>
 					</div>
 				</div>

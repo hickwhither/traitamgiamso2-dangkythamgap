@@ -29,7 +29,7 @@
 		<table class="table is-fullwidth is-striped is-hoverable is-size-7-mobile">
 			<thead>
 				<tr>
-					<th>Mã</th><th>Thân nhân</th><th>Can phạm nhân</th><th>Ngày thăm</th><th>Trạng thái / Cập nhật</th>
+					<th>Mã</th><th>Thân nhân</th><th>Can phạm nhân</th><th>Ngày thăm</th><th>Trạng thái</th><th>Cập nhật</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -39,6 +39,7 @@
 					<td><strong>{{ registration.than_nhan_ho_ten }}</strong><div class="has-text-grey">{{ registration.than_nhan_so_cccd_cmnd }}</div></td>
 					<td>{{ registration.can_pham_nhan_ho_ten }}</td>
 					<td>{{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }} - {{ registration.thoi_gian_tham_gap_buoi }}</td>
+					<td><span class="tag is-small {{ registration.trang_thai_tag_class }}">{{ registration.trang_thai_hien_thi }}</span></td>
 					<td onclick="event.stopPropagation();">
 						<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}">
 							<div class="select is-small is-fullwidth">
