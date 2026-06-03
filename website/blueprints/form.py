@@ -66,8 +66,8 @@ def home():
     return render_template('index.html')
 
 
-@bp.route('/register', methods=['GET', 'POST'])
-def register_form():
+@bp.route('/f', methods=['GET', 'POST'])
+def form():
     if request.method == 'GET':
         return render_template('form.html')
 
