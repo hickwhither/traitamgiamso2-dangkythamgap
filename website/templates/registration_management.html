@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div>
-			<a class="button is-light" href="{{ url_for('views.registration_calendar', status=selected_status) }}">Xem lịch theo ngày</a>
+			<a class="button is-light" href="{{ url_for('admin.registration_calendar', status=selected_status) }}">Xem lịch theo ngày</a>
 		</div>
 	</form>
 
@@ -41,7 +41,7 @@
 					<td>{{ registration.thoi_gian_tham_gap_ngay.strftime('%d/%m/%Y') }} - {{ registration.thoi_gian_tham_gap_buoi }}</td>
 					<td><span class="tag is-small {{ registration.trang_thai_tag_class }}">{{ registration.trang_thai_hien_thi }}</span></td>
 					<td onclick="event.stopPropagation();">
-						<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}">
+						<form method="post" action="{{ url_for('admin.update_registration_status', registration_id=registration.id) }}">
 							<div class="select is-small is-fullwidth">
 								<select name="trang_thai" onchange="this.form.submit()" aria-label="Cập nhật trạng thái hồ sơ {{ registration.id }}">
 									{% for status_value, status_label in status_choices %}
@@ -59,10 +59,10 @@
 
 	<nav class="pagination is-centered mt-4" role="navigation" aria-label="pagination">
 		{% if registrations.has_prev %}
-		<a class="pagination-previous" href="{{ url_for('views.registration_management', page=registrations.prev_num, status=selected_status) }}">Trang trước</a>
+		<a class="pagination-previous" href="{{ url_for('admin.registration_management', page=registrations.prev_num, status=selected_status) }}">Trang trước</a>
 		{% endif %}
 		{% if registrations.has_next %}
-		<a class="pagination-next" href="{{ url_for('views.registration_management', page=registrations.next_num, status=selected_status) }}">Trang sau</a>
+		<a class="pagination-next" href="{{ url_for('admin.registration_management', page=registrations.next_num, status=selected_status) }}">Trang sau</a>
 		{% endif %}
 		<ul class="pagination-list">
 			<li><span class="pagination-link is-current">Trang {{ registrations.page }}/{{ registrations.pages if registrations.pages else 1 }}</span></li>

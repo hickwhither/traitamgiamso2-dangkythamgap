@@ -15,7 +15,7 @@
 	{% if current_user.is_authenticated %}
 	<div class="mb-5">
 		<label class="label">Trạng thái (chỉnh sửa trực tiếp)</label>
-		<form method="post" action="{{ url_for('views.update_registration_status', registration_id=registration.id) }}" class="is-inline-block">
+		<form method="post" action="{{ url_for('admin.update_registration_status', registration_id=registration.id) }}" class="is-inline-block">
 			<div class="select">
 				<select name="trang_thai" onchange="this.form.submit()">
 					{% for status_value, status_label in status_choices %}

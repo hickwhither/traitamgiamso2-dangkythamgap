@@ -15,7 +15,7 @@
                 {% endfor %}
             </select>
         </div>
-        <a class="button is-light ml-2" href="{{ url_for('views.registration_management', status=selected_status) }}">Về bảng hồ sơ</a>
+        <a class="button is-light ml-2" href="{{ url_for('admin.registration_management', status=selected_status) }}">Về bảng hồ sơ</a>
     </form>
 
     {% if calendar_weeks %}
