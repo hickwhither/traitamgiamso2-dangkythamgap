@@ -2,8 +2,8 @@
 {% block title %}Lịch thăm gặp{% endblock %}
 {% block body %}
 <section class="card p-5">
-    <h1 class="title is-4 mb-2">Lịch thăm gặp theo ngày</h1>
-    <p class="subtitle is-6 has-text-grey">Mỗi ngày gồm 2 buổi (Sáng/Chiều), bấm vào ô để xem danh sách.</p>
+    <h1 class="title is-4 mb-2">Lịch thăm gặp theo thời khóa biểu</h1>
+    <p class="subtitle is-6 has-text-grey">Mỗi tuần hiển thị theo 7 ngày và 2 buổi (Sáng/Chiều). Bấm vào một ô để xem thông tin chi tiết của buổi đó.</p>
 
     <form method="get" class="mb-4">
         <label class="label">Lọc theo trạng thái</label>
@@ -18,32 +18,140 @@
         <a class="button is-light ml-2" href="{{ url_for('views.registration_management', status=selected_status) }}">Về bảng hồ sơ</a>
     </form>
 
-    {% if grouped_days %}
-    {% for day, sessions in grouped_days %}
-    <div class="box">
-        <h2 class="title is-6">Ngày {{ day.strftime('%d/%m/%Y') }}</h2>
-        <div class="columns is-multiline">
-            {% for session_name in ['Sáng', 'Chiều'] %}
-            <div class="column is-half">
-                <details>
-                    <summary><strong>{{ session_name }}</strong>: {{ sessions[session_name] | length }} buổi gặp</summary>
-                    {% if sessions[session_name] %}
-                    <ul class="mt-2">
-                        {% for reg in sessions[session_name] %}
-                        <li>{{ loop.index }}. <a href="{{ url_for('views.registration_detail', registration_id=reg.id) }}">#{{ reg.id }} - {{ reg.than_nhan_ho_ten }} / {{ reg.can_pham_nhan_ho_ten }}</a></li>
+    {% if calendar_weeks %}
+    {% set weekday_names = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'] %}
+    {% for week in calendar_weeks %}
+    <article class="box calendar-week">
+        <div class="calendar-week-header">
+            <div>
+                <p class="heading mb-1">Tuần</p>
+                <h2 class="title is-6 mb-0">{{ week.start.strftime('%d/%m/%Y') }} - {{ week.end.strftime('%d/%m/%Y') }}</h2>
+            </div>
+        </div>
+
+        <div class="calendar-table-wrap mt-4">
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th class="calendar-time-col">Buổi</th>
+                        {% for day in week.days %}
+                        <th>
+                            <span class="calendar-weekday">{{ weekday_names[loop.index0] }}</span>
+                            <span class="calendar-date">{{ day.date.strftime('%d/%m') }}</span>
+                        </th>
                         {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p class="has-text-grey mt-2">Không có hồ sơ.</p>
-                    {% endif %}
-                </details>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session_name in ['Sáng', 'Chiều'] %}
+                    <tr>
+                        <th class="calendar-time-col">{{ session_name }}</th>
+                        {% for day in week.days %}
+                        {% set registrations = day.sessions[session_name] %}
+                        {% set cell_id = 'session-' ~ week.start.strftime('%Y%m%d') ~ '-' ~ loop.index0 ~ '-' ~ session_name %}
+                        <td>
+                            <button class="calendar-cell js-calendar-cell" type="button" data-target="{{ cell_id }}" aria-controls="{{ cell_id }}" aria-expanded="false">
+                                <span class="calendar-count">{{ registrations | length }}</span>
+                                <span class="calendar-count-label">hồ sơ</span>
+                                {% if registrations %}
+                                <span class="calendar-preview">
+                                    {% for reg in registrations[:2] %}
+                                    {{ reg.than_nhan_ho_ten }}{% if not loop.last %}, {% endif %}
+                                    {% endfor %}
+                                    {% if registrations | length > 2 %}+{{ (registrations | length) - 2 }}{% endif %}
+                                </span>
+                                {% else %}
+                                <span class="calendar-preview is-empty">Trống</span>
+                                {% endif %}
+                            </button>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="calendar-session-details mt-4">
+            <p class="calendar-detail-placeholder has-text-grey">Chọn một ô Sáng/Chiều trong bảng để xem thông tin buổi đó.</p>
+            {% for day in week.days %}
+            {% set outer_loop = loop %}
+            {% for session_name in ['Sáng', 'Chiều'] %}
+            {% set registrations = day.sessions[session_name] %}
+            {% set panel_id = 'session-' ~ week.start.strftime('%Y%m%d') ~ '-' ~ (outer_loop.index0) ~ '-' ~ session_name %}
+            <div class="calendar-detail-panel" id="{{ panel_id }}" hidden>
+                <div class="calendar-detail-heading">
+                    <div>
+                        <p class="heading mb-1">{{ session_name }}</p>
+                        <h3 class="title is-6 mb-0">{{ weekday_names[outer_loop.index0] }}, ngày {{ day.date.strftime('%d/%m/%Y') }}</h3>
+                    </div>
+                    <span class="tag is-link is-light">{{ registrations | length }} hồ sơ</span>
+                </div>
+
+                {% if registrations %}
+                <div class="table-container mt-3">
+                    <table class="table is-fullwidth is-hoverable is-striped">
+                        <thead>
+                            <tr>
+                                <th>Mã</th>
+                                <th>Thân nhân</th>
+                                <th>Can phạm nhân</th>
+                                <th>Trạng thái</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reg in registrations %}
+                            <tr>
+                                <td>#{{ reg.id }}</td>
+                                <td>{{ reg.than_nhan_ho_ten }}</td>
+                                <td>{{ reg.can_pham_nhan_ho_ten }}</td>
+                                <td><span class="tag {{ reg.trang_thai_tag_class }}">{{ reg.trang_thai_hien_thi }}</span></td>
+                                <td class="has-text-right"><a class="button is-small is-link is-light" href="{{ url_for('views.registration_detail', registration_id=reg.id) }}">Xem hồ sơ</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="has-text-grey mt-3">Không có hồ sơ đăng ký trong buổi này.</p>
+                {% endif %}
             </div>
             {% endfor %}
+            {% endfor %}
         </div>
-    </div>
+    </article>
     {% endfor %}
     {% else %}
     <article class="message is-warning"><div class="message-body">Không có lịch thăm gặp phù hợp.</div></article>
     {% endif %}
 </section>
+{% endblock %}
+
+{% block script %}
+{{ super() }}
+<script>
+    (function () {
+        var cells = document.querySelectorAll('.js-calendar-cell');
+        cells.forEach(function (cell) {
+            cell.addEventListener('click', function () {
+                var week = cell.closest('.calendar-week');
+                if (!week) return;
+
+                week.querySelectorAll('.js-calendar-cell').forEach(function (otherCell) {
+                    var isActive = otherCell === cell;
+                    otherCell.classList.toggle('is-active', isActive);
+                    otherCell.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+                });
+
+                var placeholder = week.querySelector('.calendar-detail-placeholder');
+                if (placeholder) placeholder.hidden = true;
+
+                week.querySelectorAll('.calendar-detail-panel').forEach(function (panel) {
+                    panel.hidden = panel.id !== cell.dataset.target;
+                });
+            });
+        });
+    })();
+</script>
 {% endblock %}
