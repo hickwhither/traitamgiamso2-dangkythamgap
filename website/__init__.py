@@ -102,5 +102,35 @@ def create_app():
         db.session.delete(admin)
         db.session.commit()
         click.echo(f"Đã xóa admin: {admin.username} (id={admin.id})")
+    
+    @app.cli.command("change-admin-password")
+    def change_admin_password_command():
+        """Đổi mật khẩu tài khoản admin."""
+        import click
+        from werkzeug.security import generate_password_hash
+        from .models import AdminUser
+
+        identifier = click.prompt("Nhập username hoặc id admin cần đổi mật khẩu", type=str).strip()
+        if not identifier:
+            raise click.ClickException("Bạn phải nhập username hoặc id")
+
+        admin = None
+        if identifier.isdigit():
+            admin = db.session.get(AdminUser, int(identifier))
+        
+        if admin is None:
+            admin = AdminUser.query.filter_by(username=identifier).first()
+            
+        if admin is None:
+            raise click.ClickException("Không tìm thấy tài khoản admin cần đổi mật khẩu")
+
+        new_password = click.prompt("Nhập mật khẩu mới", hide_input=True, confirmation_prompt=True).strip()
+        
+        if not new_password:
+            raise click.ClickException("Mật khẩu không được để trống")
+
+        admin.password_hash = generate_password_hash(new_password)
+        db.session.commit()
+        click.echo(f"Đã đổi mật khẩu thành công cho admin: {admin.username} (id={admin.id})")
 
     return app
