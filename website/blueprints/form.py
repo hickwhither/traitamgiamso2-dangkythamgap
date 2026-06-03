@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -151,21 +151,43 @@ def registration_calendar():
         VisitRegistration.id.asc(),
     ).all()
 
-    grouped_days = {}
+    sessions_by_day = {}
     for reg in all_regs:
         day_key = reg.thoi_gian_tham_gap_ngay
-        if day_key not in grouped_days:
-            grouped_days[day_key] = {'Sáng': [], 'Chiều': [], 'Khác': []}
-        bucket = reg.thoi_gian_tham_gap_buoi.strip().title()
-        if bucket not in ('Sáng', 'Chiều'):
-            bucket = 'Khác'
-        grouped_days[day_key][bucket].append(reg)
+        if day_key not in sessions_by_day:
+            sessions_by_day[day_key] = {'Sáng': [], 'Chiều': []}
 
-    ordered_days = sorted(grouped_days.items(), key=lambda item: item[0], reverse=True)
+        raw_session = (reg.thoi_gian_tham_gap_buoi or '').strip().lower()
+        if raw_session in ('sáng', 'sang', 'buổi sáng', 'buoi sang'):
+            bucket = 'Sáng'
+        elif raw_session in ('chiều', 'chieu', 'buổi chiều', 'buoi chieu'):
+            bucket = 'Chiều'
+        else:
+            bucket = 'Sáng'
+        sessions_by_day[day_key][bucket].append(reg)
+
+    calendar_weeks = []
+    week_starts = sorted(
+        {day - timedelta(days=day.weekday()) for day in sessions_by_day},
+        reverse=True,
+    )
+    for week_start in week_starts:
+        days = []
+        for offset in range(7):
+            day = week_start + timedelta(days=offset)
+            days.append({
+                'date': day,
+                'sessions': sessions_by_day.get(day, {'Sáng': [], 'Chiều': []}),
+            })
+        calendar_weeks.append({
+            'start': week_start,
+            'end': week_start + timedelta(days=6),
+            'days': days,
+        })
 
     return render_template(
         'registration_calendar.html',
-        grouped_days=ordered_days,
+        calendar_weeks=calendar_weeks,
         selected_status=selected_status,
         status_choices=VisitRegistration.STATUS_CHOICES,
     )
